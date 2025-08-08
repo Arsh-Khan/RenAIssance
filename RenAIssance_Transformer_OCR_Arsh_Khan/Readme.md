@@ -9,6 +9,7 @@
   * [Training the model](#training)
   * [Inference](#inference)
 * [Results](#results)
+* [Application Web Interface](#web)
 * [Useful Links](#links)
 * [Acknowledgements](#acknowledgements)
 * [License](#license)
@@ -92,25 +93,26 @@ The training process involves several key components to ensure the model effecti
      - **Cosine Annealing**: Periodically decays and resets the learning rate in cycles, allowing the model to avoid local minima and promoting better exploration of the loss landscape, which can improve generalization and performance.
 
 3. **Regularization Techniques**:
-   - **Dropout**: Randomly deactivates neurons during training to prevent overfitting.
    - **Weight Decay**: Penalizes large weights to encourage simpler models and improve generalization.
    - **Label Smoothing**: Softens target labels to prevent the model from becoming overconfident in its predictions.
    - **Temperature Scaling**: It involves adjusting the logits of the output layer by a scalar temperature parameter to produce more calibrated probability estimates.
 
-4. **Warmup Ratio**:
-   - Gradually increases the learning rate from a small initial value to the target learning rate over a few iterations at the start of training. This stabilizes the training process and improves convergence.
-
-5. **Early Stopping**:
+4. **Early Stopping**:
    - Monitors the model’s performance on a validation set and halts training when performance ceases to improve, preventing overfitting and saving computational resources.
 
-6. **Evaluation Metrics**:
+5. **Evaluation Metrics**:
    - The model’s performance is continuously monitored using Character Error Rate (CER), Word Error Rate (WER), and BLEU Score during training to guide adjustments to hyperparameters and strategies.
 
-7. **Loss Function**:
+6. **Loss Function**:
 Various loss functions have been experimented and implemented to help the model fine-tune across different data distributions, to enhance both its accuracy and generalizability.
 
-   - **Beam Search Loss**: Integrates beam search decoding into the training process, focusing on generating coherent and contextually relevant sequences. Includes refinements like length normalization and normalized log-likelihood objectives to ensure fair evaluation of sequence lengths.
    - **Focal Loss**: Focal Loss is a modification of cross-entropy loss designed to address class imbalance by focusing more on hard-to-classify examples. It introduces a scaling factor, where pt is the predicted probability of the true class and γ is a tunable parameter (called the focusing parameter). This factor down-weights the contribution of easily classified examples, allowing the model to focus more on difficult or misclassified instances.
+
+7. **FP8 Training**:
+Advanced numerical representation designed to reduce memory bandwidth(~ half that of FP16), less power consumption and accelerate training while preserving model accuracy(2x speed-up on H100). This allows larger batch sizes, faster training, and beneficial for scaling large-scale models such as billion-parameter ViT’s within the same GPU memory constraints.
+
+8. **Flash Attention**:
+It addresses the scalability bottlenecks of the transformer architecture caused by the quadratic time and memory complexity of standard self-attention. It is an I/O-aware, exact attention algorithm that improves performance by minimizing memory reads/writes, using SRAM-efficient tiling, and fusing all attention operations into a single, optimized GPU kernel. Achieves 2–4x speedup over standard attention and reduces memory usage by up to 20x, enabling more efficient training of large models. It maintains 100% numerical accuracy, making it highly suitable for scaling modern billion-parameters transformer-based architectures.
 
 By following this detailed preprocessing and training strategy, the Transformer OCR model is designed to achieve high accuracy and robust performance in recognizing complex historical Spanish texts.
 
@@ -167,18 +169,24 @@ The inference pipeline is designed to be efficient and accurate, leveraging the 
 
 The TrOCR model demonstrates significant improvements in OCR performance, especially for historical Spanish texts. Current Key performance metrics include:
 
-- **Character Error Rate (CER):** 0.03 (97% accuracy)
-- **Word Error Rate (WER):** 0.07 (93% accuracy)
+- **Character Error Rate (CER):** ~0.02 (98% accuracy)
+- **Word Error Rate (WER):** ~0.04 (96% accuracy)
 
 --- 
+
+## <ins> Application Web Interface
+
+[![Demo Video]()](https://raw.githubusercontent.com/Arsh-Khan/RenAIssance/main/RenAIssance_Transformer_OCR_Arsh_Khan/assets/RenAI Web Prototype Demo.mp4)
+
+---
 ## <ins>Useful Links
 
 For more comprehensive details about the project and documentation, you can explore the following links:
 
-- **Blog** : [Arsh Khan Transformer OCR Blog](https://medium.com/@khanarsh0124/gsoc-2024-with-humanai-text-recognition-with-transformer-models-de86522cdc17)
+- **Blog** : [OCR 2024 Blog](https://medium.com/@khanarsh0124/gsoc-2024-with-humanai-text-recognition-with-transformer-models-de86522cdc17), [OCR 2025 Blog](https://medium.com/@khanarsh0124/gsoc-2025-with-humanai-end-to-end-ocr-systems-using-transformer-models-adab3e74375a)
 
-- **Google Summer of Code (GSoC) 2024 Project**:   
-  [GSoC 2024 Project](https://summerofcode.withgoogle.com/programs/2024/projects/qnIVjbSY)
+- **Google Summer of Code (GSoC) 2024-25 Project**:   
+  [GSoC 2024 Project](https://summerofcode.withgoogle.com/programs/2024/projects/qnIVjbSY), [GSoC 2025 Project](https://summerofcode.withgoogle.com/programs/2025/projects/WvX5G3H0)
 
 - **HumanAI Foundation**:[HumanAI Projects](https://humanai.foundation/activities/gsoc2024.html)
 
